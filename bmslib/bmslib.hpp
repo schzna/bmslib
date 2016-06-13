@@ -1,5 +1,6 @@
 #pragma once
 #include<string>
+#include<fstream>
 #include<array>
 #include<vector>
 namespace bmslib {
@@ -71,10 +72,20 @@ namespace bmslib {
 	struct Bms {
 		Header header;
 		std::vector<Bar> bar;
+		bool ok = false;
 	};
 
 	Bms load(std::string bmsfile) {
-
+		std::ifstream file(bmsfile);
+		std::string line;
+		if (file.fail())
+		{
+			return Bms();
+		}
+		while (getline(file, line))
+		{
+			
+		}
 	}
 
 	void save(std::string filename, const Bms& bms) {
