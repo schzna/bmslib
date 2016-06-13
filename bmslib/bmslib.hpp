@@ -1,6 +1,7 @@
 #pragma once
 #include<string>
 #include<array>
+#include<vector>
 namespace bmslib {
 
 	enum class Player {
@@ -59,5 +60,24 @@ namespace bmslib {
 		Key9_2P,
 	};
 
+	struct Bar {
+		int backchorus; // Set WAV number
+		int length = 1000; // Default Value = 1000
+		std::vector<double> bpms;
+		int bga, pooranim, layerbga;
+		std::array<std::vector<bool>, 9> objects;
+	};
 
+	struct Bms {
+		Header header;
+		std::vector<Bar> bar;
+	};
+
+	Bms load(std::string bmsfile) {
+
+	}
+
+	void save(std::string filename, const Bms& bms) {
+
+	}
 }
