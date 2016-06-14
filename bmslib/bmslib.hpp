@@ -83,6 +83,7 @@ namespace bmslib {
 	};
 
 	struct Bar {
+		Channel channel;
 		int backchorus; // Set WAV number
 		int length = 1000; // Default Value = 1000
 		std::vector<double> bpms;
@@ -93,10 +94,9 @@ namespace bmslib {
 	struct Bms {
 		Header header;
 		std::vector<Bar> bar;
-		bool ok = false;
 	};
 
-	Bms load(std::string bmsfile) {
+	Bms load_data(std::string bmsfile) {
 		std::ifstream file(bmsfile);
 		std::string line;
 		if (file.fail())
@@ -108,9 +108,30 @@ namespace bmslib {
 		{
 			if (line[0] == '#') {
 				if (isdigit(line[1])) {
+					if (bms.bar.size() < std::stoi(line.substr(1, 3)) + 1){
+						bms.bar.reserve(std::stoi(line.substr(1, 3)) + 1);
+					}
+					Bar bar;
+					bar.channel = static_cast<Channel>(std::stoi(line.substr(4, 2)));
 
+					bms.bar[std::stoi(line.substr(1, 3))];
 				}
-				else {
+			}
+		}
+	}
+
+	Bms loadheader(std::string bmsfile) {
+		std::ifstream file(bmsfile);
+		std::string line;
+		if (file.fail())
+		{
+			return Bms();
+		}
+		Bms bms;
+		while (getline(file, line))
+		{
+			if (line[0] == '#') {
+				if (!isdigit(line[1])) {
 					auto strs = split_naive(line, ' ');
 					std::string command = strs[0].substr(1);
 					std::string arg1 = strs[1];
@@ -141,7 +162,7 @@ namespace bmslib {
 					if (!std::strcmp(command.c_str(), "TOTAL")) {
 						bms.header.total = std::stoi(arg1);
 					}
-					if (!std::strcmp(command.substr(0,3).c_str(), "WAV")) {
+					if (!std::strcmp(command.substr(0, 3).c_str(), "WAV")) {
 						bms.header.wav[std::stoi(command.substr(3, 2), nullptr, 36)] = arg1;
 					}
 					if (!std::strcmp(command.substr(0, 3).c_str(), "BMP")) {
