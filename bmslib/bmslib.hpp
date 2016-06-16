@@ -70,17 +70,17 @@ namespace bmslib {
 	};
 
 	enum Channel {
-		None,
+		None1,
 		Backwav,
 		Shortening,
 		Changebpm,
 		Bga,
-		None,
+		None2,
 		Pooranim,
 		Bgalayer,
-		Changebpm,
+		exBPM,
 		Stop,
-		None,
+		None3,
 		Key1,
 		Key2,
 		Key3,
@@ -90,7 +90,7 @@ namespace bmslib {
 		Key7,
 		Key8,
 		Key9,
-		None,
+		None4,
 		Key1_2P,
 		Key2_2P,
 		Key3_2P,
@@ -113,8 +113,12 @@ namespace bmslib {
 
 	struct Object {
 		int data;
-		long long int time;
+		long time;
 		Channel channel;
+
+		bool operator<(const Object obj) {
+			return time < obj.time;
+		}
 	};
 
 
@@ -137,8 +141,10 @@ namespace bmslib {
 			if (line[0] == '#') {
 				if (isdigit(line[1])) {
 					auto str = split_naive(line,':');
+					
 					auto command = str[0];
 					auto data = str[1];
+
 					if (bms.bar.size() < std::stoi(command.substr(1, 3)) + 1){
 						bms.bar.reserve(std::stoi(command.substr(1, 3)) + 1);
 					}
@@ -166,14 +172,26 @@ namespace bmslib {
 			return Bms();
 		}
 		Bms bms;
+
 		while (getline(file, line))
 		{
+
 			if (line[0] == '#') {
+
 				if (!isdigit(line[1])) {
+
 					auto strs = split_naive(line, ' ');
 					std::string command = strs[0].substr(1);
-					std::string arg1 = strs[1];
+					std::string arg1;
+					if (strs.size() == 1) {
+						arg1 = "";
+					}
+					else {
+						arg1 = strs[1];
+					}
+
 					if (!std::strcmp(command.c_str(), "PLAYER")) {
+
 						bms.header.player = static_cast<Player>(std::stoi(arg1.c_str()));
 					}
 					if (!std::strcmp(command.c_str(), "GENRE")) {
@@ -212,6 +230,7 @@ namespace bmslib {
 				}
 			}
 		}
+		return bms;
 	}
 
 	void save(std::string filename, const Bms& bms) {
