@@ -4,6 +4,7 @@
 #include<fstream>
 #include<array>
 #include<vector>
+#include<algorithm>
 namespace bmslib {
 
 	std::vector<std::string> split_naive(const std::string &s, char delim) {
@@ -22,6 +23,25 @@ namespace bmslib {
 		if (!item.empty())
 			elems.push_back(item);
 		return elems;
+	}
+
+	std::string trim(const std::string& string, const char* trimCharacterList = " \t\v\r")
+	{
+		std::string result;
+
+		// 左側からトリムする文字以外が見つかる位置を検索します。
+		std::string::size_type left = string.find_first_not_of(trimCharacterList);
+
+		if (left != std::string::npos)
+		{
+			// 左側からトリムする文字以外が見つかった場合は、同じように右側からも検索します。
+			std::string::size_type right = string.find_last_not_of(trimCharacterList);
+
+			// 戻り値を決定します。ここでは右側から検索しても、トリムする文字以外が必ず存在するので判定不要です。
+			result = string.substr(left, right - left + 1);
+		}
+
+		return result;
 	}
 
 	enum Player {
@@ -91,9 +111,16 @@ namespace bmslib {
 		std::array<std::vector<bool>, 9> objects;
 	};
 
+	struct Object {
+		int data;
+		long long int time;
+		Channel channel;
+	};
+
+
 	struct Bms {
 		Header header;
-		std::vector<Bar> bar;
+		std::vector<Object> bar;
 	};
 
 	Bms load_data(std::string bmsfile) {
@@ -106,18 +133,29 @@ namespace bmslib {
 		Bms bms;
 		while (getline(file, line))
 		{
+			trim(line);
 			if (line[0] == '#') {
 				if (isdigit(line[1])) {
-					if (bms.bar.size() < std::stoi(line.substr(1, 3)) + 1){
-						bms.bar.reserve(std::stoi(line.substr(1, 3)) + 1);
+					auto str = split_naive(line,':');
+					auto command = str[0];
+					auto data = str[1];
+					if (bms.bar.size() < std::stoi(command.substr(1, 3)) + 1){
+						bms.bar.reserve(std::stoi(command.substr(1, 3)) + 1);
 					}
-					Bar bar;
-					bar.channel = static_cast<Channel>(std::stoi(line.substr(4, 2)));
-
-					bms.bar[std::stoi(line.substr(1, 3))];
+					auto channel = static_cast<Channel>(std::stoi(command.substr(4, 2)));
+					int num_bar = std::stoi(command.substr(0, 3));
+					int num_note = data.size() / 2;
+					for (int i = 0; i < num_note - 1; i++) {
+						Object obj;
+						obj.time = 9600 * num_bar + i*(9600 / num_note);
+						obj.data = std::stoi(data.substr(i, 2));
+						obj.channel = channel;
+						bms.bar.push_back(obj);
+					}
 				}
 			}
 		}
+		std::sort(bms.bar.begin(), bms.bar.end());
 	}
 
 	Bms loadheader(std::string bmsfile) {
