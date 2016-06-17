@@ -229,7 +229,7 @@ namespace bmslib {
 					if (!std::strcmp(command.substr(0, 3).c_str(), "BMP")) {
 						bms.header.bmp[std::stoi(command.substr(3, 2), nullptr, 36)] = arg1;
 					}
-					if (!std::strcmp(command.c_str(), "StageFile")) {
+					if (!std::strcmp(command.c_str(), "StageFile") || !std::strcmp(command.c_str(), "STAGEFILE")) {
 						bms.header.stagefile = arg1;
 					}
 				}
