@@ -198,7 +198,11 @@ namespace bmslib {
 						bms.header.genre = arg1;
 					}
 					if (!std::strcmp(command.c_str(), "TITLE")) {
-						bms.header.title = arg1;
+						std::string rs;
+						for (int i = 1; i < strs.size() - 1; i++) {
+							rs += strs[i];
+						}
+						bms.header.title = rs;
 					}
 					if (!std::strcmp(command.c_str(), "ARTIST")) {
 						bms.header.artist = arg1;

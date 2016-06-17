@@ -8,6 +8,7 @@ int main() {
 
 	std::cout << "artist:" << bms.header.artist << std::endl;
 
+
 	std::cout << "genre:" << bms.header.genre << std::endl;
 
 	system("pause");
