@@ -201,6 +201,7 @@ namespace bmslib {
 						std::string rs;
 						for (int i = 1; i < strs.size() - 1; i++) {
 							rs += strs[i];
+							rs += "";
 						}
 						bms.header.title = rs;
 					}
