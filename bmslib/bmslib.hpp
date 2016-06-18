@@ -1,5 +1,6 @@
 #pragma once
 #include<string>
+#include<sstream>
 #include<cstdint>
 #include<fstream>
 #include<array>
@@ -162,10 +163,12 @@ namespace bmslib {
 			}
 		}
 		std::sort(bms.bar.begin(), bms.bar.end());
+		return bms;
 	}
 
 	Bms loadheader(std::string bmsfile) {
 		std::ifstream file(bmsfile);
+		
 		std::string line;
 		if (file.fail())
 		{
@@ -209,7 +212,11 @@ namespace bmslib {
 						bms.header.artist = arg1;
 					}
 					if (!std::strcmp(command.c_str(), "BPM")) {
-						bms.header.bpm = std::stof(arg1);
+						std::stringstream ss;
+						ss << arg1;
+						double bpm;
+						ss >> bpm;
+						bms.header.bpm = bpm;
 					}
 					if (!std::strcmp(command.c_str(), "PLAYLEVEL")) {
 						bms.header.level = std::stoi(arg1);
