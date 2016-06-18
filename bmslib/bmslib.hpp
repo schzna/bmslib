@@ -128,7 +128,7 @@ namespace bmslib {
 		std::vector<Object> bar;
 	};
 
-	Bms load_data(std::string bmsfile) {
+	Bms loaddata(std::string bmsfile) {
 		std::ifstream file(bmsfile);
 		std::string line;
 		if (file.fail())
