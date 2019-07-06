@@ -1,12 +1,18 @@
-#bmslib
+# bmslib
 このライブラリはbmsファイルの保存と読み込みを行うための
 ライブラリです。
 
 This is library to save bms file and load one.
 
-##Platform
-:ballot_box_with_check: Visual Studio 2015  
-:white_large_square: Other
+## Progress
+ダメダメです。
+今は忙しいのであとでいろいろ直します。
 
-##License
-This software is released under the MIT License, see LICENSE file.
+## License
+NYSLライセンスのもと公開されています。
+つまりどうにでもしてください。
+詳細はLICENSEファイルを見てください。
+
+These codes are published under NYSL LICENSE.
+In short, you can freely use these codes.
+If you want to know details,see LICENSE file.
